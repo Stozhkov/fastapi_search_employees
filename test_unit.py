@@ -1,10 +1,31 @@
 """
 Tests for function "find_employees"
 """
-
-import datetime
+import inspect
+from datetime import datetime, timedelta
 
 from db import find_employees
+
+
+def test_unit_search_arguments_default_parameter():
+    """
+    Test function "find_employees". Testing arguments default parameters.
+    :return:
+    """
+    spec = inspect.getfullargspec(find_employees)
+    default_values = dict(zip(spec.args[::-1], (spec.defaults or ())[::-1]))
+
+    assert default_values['name'] is None
+    assert default_values['email'] is None
+    assert default_values['age_min'] == 1
+    assert default_values['age_max'] == 99
+    assert default_values['company'] is None
+    assert default_values['join_date_start'] == datetime.strptime('1900-01-01', '%Y-%m-%d')
+    assert datetime.today() - timedelta(seconds=1) <= default_values['join_date_stop'] <= datetime.today()
+    assert default_values['job_title'] is None
+    assert default_values['gender'] is None
+    assert default_values['salary_min'] == 0
+    assert default_values['salary_max'] == 99999999999
 
 
 def test_unit_search_with_default_param():
@@ -90,7 +111,7 @@ def test_unit_search_by_one_join_date():
     join_date_start == join_date_stop
     :return:
     """
-    join_date = datetime.datetime.strptime("2012-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
+    join_date = datetime.strptime("2012-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
 
     result = find_employees(join_date_start=join_date, join_date_stop=join_date)
 
@@ -105,8 +126,8 @@ def test_unit_search_by_diff_join_date():
     join_date_start != join_date_stop
     :return:
     """
-    join_date_start = datetime.datetime.strptime("2012-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
-    join_date_stop = datetime.datetime.strptime("2013-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
+    join_date_start = datetime.strptime("2012-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
+    join_date_stop = datetime.strptime("2013-12-29 03:00:10", '%Y-%m-%d %H:%M:%S')
 
     result = find_employees(join_date_start=join_date_start, join_date_stop=join_date_stop)
 
@@ -179,8 +200,8 @@ def test_unit_search_with_multi_parameters():
     age_min = 22
     age_max = 56
     gender = 'female'
-    join_date_start = datetime.datetime.strptime("2005-01-01 00:00:00", '%Y-%m-%d %H:%M:%S')
-    join_date_stop = datetime.datetime.strptime("2005-12-31 23:59:59", '%Y-%m-%d %H:%M:%S')
+    join_date_start = datetime.strptime("2005-01-01 00:00:00", '%Y-%m-%d %H:%M:%S')
+    join_date_stop = datetime.strptime("2005-12-31 23:59:59", '%Y-%m-%d %H:%M:%S')
     job_title = 'driver'
     salary_min = 1600
     salary_max = 6600
